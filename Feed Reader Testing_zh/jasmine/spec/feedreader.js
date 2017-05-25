@@ -27,10 +27,8 @@ $(function() {
          */
          it('URLs are defined',function(){
 
-           for(var i=0, length = allFeeds.length;i<length;i++){
-            expect(allFeeds[i].url).toBeDefined();
-            expect(allFeeds[i].url.length).not.toBe(0);
-          }
+            sameDetection("url");
+
          });
 
         /* TODO:
@@ -38,28 +36,29 @@ $(function() {
          */
          it('names are defined',function(){
 
+          sameDetection("name");
+
+         });
+
+         function sameDetection(name){
            for(var i=0, length = allFeeds.length;i<length;i++){
             expect(allFeeds[i].name).toBeDefined();
             expect(allFeeds[i].name.length).not.toBe(0);
-          }
-         });
+         }
+       }
     });
 
 
     /* TODO: 写一个叫做 "The menu" 的测试用例 */
     describe('The menu',function(){
-          var menu;
-          beforeEach(function(){
-             menu = document.getElementsByTagName('body')[0];
-          });
+
         /* TODO:
          * 写一个测试用例保证菜单元素默认是隐藏的。你需要分析 html 和 css
          * 来搞清楚我们是怎么实现隐藏/展示菜单元素的。
          */
 
          it('menu hidden default',function(){
-           expect(menu.className=='menu-hidden').toBe(true);
-
+           expect($('body').hasClass('menu-hidden')).toBeTruthy();
          });
 
          /* TODO:
@@ -77,9 +76,9 @@ $(function() {
 
           it(' display or hidden by click', function () {
             $('.menu-icon-link').trigger('click');
-            expect($('body').className=='menu-hidden').not.toBe(true);
+            expect($('body').hasClass('menu-hidden')).not.toBeTruthy();
             $('.menu-icon-link').trigger('click');
-            expect($('body').className=='menu-hidden').not.toBe(true);
+            expect($('body').hasClass('menu-hidden')).toBeTruthy();
           });
 
          });
@@ -93,15 +92,11 @@ $(function() {
        * 和异步的 done() 函数。
        */
         beforeEach(function(done){
-          loadFeed(0,function(){
-            done();
-          });
-
+          loadFeed(0,done);
         });
 
-        it('loadFeed work well',function(done){
+        it('loadFeed work well',function(){
           expect($(".feed .entry").length).not.toBe(0);
-          done();
 
            });
     /* TODO: 写一个叫做 "New Feed Selection" 的测试用例 */
@@ -111,6 +106,10 @@ $(function() {
          * 记住，loadFeed() 函数是异步的。
          */
          var feedOld;
+         jasmine.DEFAULT_TIMEOUT_INTERVAL = 40000;
+         /*拿到加载之前的html内容和加载之后的
+          *html内容
+         */
          beforeEach(function (done) {
 
            loadFeed(0, function () {
@@ -119,12 +118,13 @@ $(function() {
                done();
              });
            });
-
          });
-         it(' load correctly', function (done) {
 
+         /*验证加载之前的html内容和加载之后的
+          *html内容不一样
+         */
+         it(' load correctly', function () {
            expect($('.feed').html()).not.toEqual(feedOld);
-           done();
          });
       });
 }());
